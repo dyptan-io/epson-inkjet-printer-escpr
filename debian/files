@@ -1,0 +1,3 @@
+epson-inkjet-printer-escpr-dbgsym_1.8.6-1_arm64.ddeb contrib/debug optional automatic=yes
+epson-inkjet-printer-escpr_1.8.6-1_arm64.buildinfo contrib/misc optional
+epson-inkjet-printer-escpr_1.8.6-1_arm64.deb contrib/misc optional

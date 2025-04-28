@@ -43,8 +43,8 @@ config.status: configure
 		--disable-lsb \
 		 \
 		--prefix=/usr \
-		--with-cupsfilterdir=/usr/local/lib/cups/filter \
-		--with-cupsppddir=/usr/local/share/cups/model
+		--with-cupsfilterdir=/usr/lib/cups/filter \
+		--with-cupsppddir=/usr/share/cups/model
 
 build: build-stamp
 

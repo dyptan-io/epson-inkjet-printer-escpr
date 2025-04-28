@@ -1,0 +1,14 @@
+services:
+  airprint:
+    build: ./airprint
+    network_mode: host
+    environment:
+      CUPS_LOGLEVEL: warn
+      CUPS_IP: 192.168.10.100
+      CUPS_HOSTNAME: print.${DOMAIN}
+      CUPS_LPADMIN_PRINTER1: "lpadmin -E -p EPSON_ET-2710_Series -D 'EPSON ET-2710 Series' -v lpd://192.168.10.105:515/PASSTHRU -L Office -P /usr/local/share/cups/model/epson-inkjet-printer-escpr/Epson-ET-2710_Series.ppd"
+      CUPS_LPADMIN_PRINTER3_ENABLE: cupsenable EPSON_ET-2710_Series
+      CUPS_LPADMIN_PRINTER1_ACCEPT: cupsaccept EPSON_ET-2710_Series
+    volumes:
+      - ./airprint/avahi/:/etc/avahi/services/
+    restart: unless-stopped
