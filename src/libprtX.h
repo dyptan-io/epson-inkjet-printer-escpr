@@ -48,6 +48,10 @@ typedef struct rtp_filter_option {
 	char ink[NAME_MAX + 1];
 	char media[NAME_MAX + 1];
 	char quality[NAME_MAX + 1];
+
+	char mediaType[NAME_MAX + 1];    /* e.g. "PLAIN", "GLOSSY", "PHOTO", etc. */
+	char printQuality[NAME_MAX + 1]; /* e.g. "DRAFT", "NORMAL", "HIGH", etc. */
+  
 	char duplex[NAME_MAX + 1];
 	char inputslot[NAME_MAX + 1];
 	char brightness[NAME_MAX + 1];

@@ -26,5 +26,6 @@ cat /dev/null > m4-macros
 
 libtoolize -c --force
 aclocal -I m4 
-autoconf && automake
+autoupdate
+autoconf && automake --add-missing
 

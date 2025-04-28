@@ -1,0 +1,8 @@
+.deps/
+**/.deps/
+**/.libs/
+**/autom4te.cache/
+**/*.log
+**/*.lo
+**/*.la
+**/*.o

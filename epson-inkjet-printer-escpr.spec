@@ -3,8 +3,8 @@
 %define ver     1.8.6
 %define rel     1
 
-%define cupsfilterdir   /opt/epson-inkjet-printer-escpr/lib/cups/filter
-%define cupsppddir      /opt/epson-inkjet-printer-escpr/share/cups/model
+%define cupsfilterdir   /usr/local/lib/cups/filter
+%define cupsppddir      /usr/local/share/cups/model
 
 Name: %{pkg}
 Version: %{ver}

@@ -20,7 +20,7 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-
+# export DH_COMPAT = 7
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -43,8 +43,8 @@ config.status: configure
 		--disable-lsb \
 		 \
 		--prefix=/usr \
-		--with-cupsfilterdir=/opt/epson-inkjet-printer-escpr/lib/cups/filter \
-		--with-cupsppddir=/opt/epson-inkjet-printer-escpr/share/cups/model
+		--with-cupsfilterdir=/usr/local/lib/cups/filter \
+		--with-cupsppddir=/usr/local/share/cups/model
 
 build: build-stamp
 

@@ -22,6 +22,7 @@
 #endif
 
 #include <errno.h>
+#include <ctype.h>
 #include <cups/cups.h>
 #include <cups/ppd.h>
 #include <cups/raster.h>
@@ -471,7 +472,6 @@ get_option_for_ppd (const char *printer, filter_option_t *filter_opt_p)
 		}
 	}
 
-
 	/* media */
 	if (filter_opt_p->media[0] == '\0')
 	{
@@ -493,18 +493,36 @@ get_option_for_ppd (const char *printer, filter_option_t *filter_opt_p)
 	}
 
 	/* MediaType */
-	if (filter_opt_p->quality[0] == '\0')
-	{
-		opt = get_default_choice (ppd_p, "MediaType");
+	if (filter_opt_p->mediaType[0] == '\0') {
+        opt = get_default_choice(ppd_p, "MediaType");
+        if (!opt) {
+            fprintf(stderr, "Warning: cannot find MediaType in PPD. Defaulting to 'PLAIN'\n");
+            strcpy(filter_opt_p->mediaType, "PLAIN");
+        } else {
+            strcpy(filter_opt_p->mediaType, opt);
+        }
+    }
 
-		if (!opt){
-			opt = get_default_choice (ppd_p, "Quality");	/* for old version */
+	/* Quality */
+	if (filter_opt_p->printQuality[0] == '\0') {
+        opt = get_default_choice(ppd_p, "cupsPrintQuality");
+        if (!opt) {
+            opt = get_default_choice(ppd_p, "Quality");  /* fallback for old PPD */
+        }
+        if (!opt) {
+            fprintf(stderr, "Warning: cannot find cupsPrintQuality in PPD. Using 'NORMAL'\n");
+            strcpy(filter_opt_p->printQuality, "NORMAL");
+        } else {
+            strcpy(filter_opt_p->printQuality, opt);
+        }
+    }
 
-			if (!opt)return 1;	
-		}
-		
-		strcpy (filter_opt_p->quality, opt);
-	}
+	snprintf(filter_opt_p->quality, sizeof(filter_opt_p->quality),
+             "%s_%s", filter_opt_p->mediaType, filter_opt_p->printQuality);
+
+	// fprintf(stderr, "ppd_filter_opt_p->mediaType %s\n", filter_opt_p->mediaType);
+	// fprintf(stderr, "ppd_filter_opt_p->printQuality %s\n", filter_opt_p->printQuality);
+	// fprintf(stderr, "ppd_filter_opt_p->quality %s\n", filter_opt_p->quality);
 
 	/* duplex */
 	if (filter_opt_p->duplex[0] == '\0')
@@ -648,15 +666,23 @@ get_option_for_arg (const char *opt_str, filter_option_t *filter_opt_p)
 	if (opt)
 		strcpy (filter_opt_p->ink, opt);
 
-	opt = cupsGetOption ("MediaType", opt_num, option_p);
-	if(!opt){
-		opt = cupsGetOption ("Quality", opt_num, option_p); /* for old version */
-	}
+	opt = cupsGetOption("MediaType", opt_num, option_p);
+    if (opt) {
+        strcpy(filter_opt_p->mediaType, opt);
+    }
 
-	if (opt)
-	{
-		strcpy (filter_opt_p->quality, opt);
-	}
+	opt = cupsGetOption("cupsPrintQuality", opt_num, option_p);
+    if (!opt) {
+        opt = cupsGetOption("Quality", opt_num, option_p); /* fallback */
+    }
+    if (opt) {
+        strcpy(filter_opt_p->printQuality, opt);
+		to_uppercase(filter_opt_p->printQuality);
+    }
+
+	// fprintf(stderr, "filter_opt_p->mediaType %s\n", filter_opt_p->mediaType);
+	// fprintf(stderr, "filter_opt_p->printQuality %s\n", filter_opt_p->printQuality);
+	// fprintf(stderr, "filter_opt_p->quality %s\n", filter_opt_p->quality);
 
 	opt = cupsGetOption ("Duplex", opt_num, option_p);
 	if (opt)
@@ -734,4 +760,10 @@ sigterm_handler (int sig)
   cancel_flg = 1;
 
   return;
+}
+
+void to_uppercase(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        str[i] = toupper((unsigned char) str[i]);
+    }
 }
